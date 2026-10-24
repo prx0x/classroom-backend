@@ -3,6 +3,16 @@ import cors from "cors";
 // import { subjects } from "./db/schema";
 // @ts-ignore
 import subjectsRouter from "./routes/subjects";
+import { redisClient } from "./db/redis";
+import { start } from "repl";
+
+async function startServer(){
+    await redisClient.connect();
+    app.listen(PORT, () => {
+        console.log(`Server is running at the ${process.env.REDIS_URL}`);
+    });
+}
+startServer().catch(console.error);
 
 const app = express();
 const PORT = 8000;

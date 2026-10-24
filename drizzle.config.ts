@@ -1,11 +1,8 @@
 import 'dotenv/config';
 import { defineConfig } from "drizzle-kit";
+import process from "node:process";
 
-const databaseUrl = (globalThis as typeof globalThis & {
-  process?: { env?: Record<string, string | undefined> };
-}).process?.env?.DATABASE_URL;
-
-if (!databaseUrl) {
+if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL is not set in .env file');
 }
 
@@ -14,6 +11,6 @@ export default defineConfig({
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
-    url: databaseUrl,
+    url: process.env.DATABASE_URL,
   }
 });
