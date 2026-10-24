@@ -1,7 +1,7 @@
 import express from "express";
 import { db } from "../db";
 import { departments, subjects } from "../db/schema/app";
-import { and, desc, eq, getTableColumns, ilike, sql } from "drizzle-orm";
+import { and, desc, eq, getTableColumns, ilike, or, sql } from "drizzle-orm";
 import { redisClient } from "../db/redis";
 
 const router = express.Router();
@@ -47,9 +47,12 @@ router.get("/", async (req, res) => {
 
     // search by name or code
     if (search) {
+      const pattern = `%${String(search).replace(/[%_]/g, '\\$&')}%`;
       filterConditions.push(
-        ilike(subjects.name, `%${search}%`),
-        ilike(subjects.code, `%${search}%`),
+        or(
+            ilike(subjects.name, pattern),
+            ilike(subjects.code, pattern),
+        )
       );
     }
     // filterepartment name

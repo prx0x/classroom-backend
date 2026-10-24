@@ -2,7 +2,8 @@ import express from "express";
 import cors from "cors";
 // import { subjects } from "./db/schema";
 // @ts-ignore
-import subjectsRouter from "./routes/subjects";
+import subjectsRouter from "./routes/subjects"; import departmentsRouter from "./routes/departments";
+
 import { redisClient } from "./db/redis";
 import { start } from "repl";
 
@@ -10,6 +11,7 @@ async function startServer(){
     await redisClient.connect();
     app.listen(PORT, () => {
         console.log(`Server is running at the ${process.env.REDIS_URL}`);
+        console.log(`Server is running at the localhost:${PORT}`);
     });
 }
 startServer().catch(console.error);
@@ -30,11 +32,12 @@ app.use(cors({
 app.use(express.json());
 
 app.use('/api/subjects', subjectsRouter);
+app.use("/api/departments", departmentsRouter);
 
 app.get('/', (req, res) => {
     res.send("Hello, welcome to the classroom API!");
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running at the localhost:${PORT}`);
-})
+// app.listen(PORT, () => {
+//     console.log(`Server is running at the localhost:${PORT}`);
+// })
